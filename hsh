@@ -1,0 +1,60 @@
+#include <IRremote.h> 
+// Inserts IR remote code library
+const int RECV_PIN =A0;     
+int MOTOR =5; 
+int PASSIVE_BUZZER =4;
+int Rled =3;
+IRrecv irrecv(RECV_PIN);
+//sets variables for all pins
+decode_results results;     
+void setup(){     
+ Serial.begin(9600);     
+ irrecv.enableIRIn(); 
+ pinMode(RECV_PIN, INPUT);    
+ pinMode(MOTOR, OUTPUT);
+ pinMode(PASSIVE_BUZZER, OUTPUT);
+ pinMode(Rled, OUTPUT);
+ //identifies wether pins are being used by actuators or sensors
+}     
+void loop(){     
+   if (irrecv.decode(&results)){     
+int value = results.value;     
+Serial.println(value);      
+       switch(value){     
+         case -1: //Keypad button "1"     
+         //runs motor    
+         digitalWrite(MOTOR, HIGH);     
+         digitalWrite(PASSIVE_BUZZER, LOW);     
+         digitalWrite(Rled, HIGH);    
+         }     
+       switch(value){     
+         case -30601: //Keypad button "2"     
+         //runs buzzer     
+         digitalWrite(MOTOR, LOW);     
+         digitalWrite(PASSIVE_BUZZER, HIGH);     
+         digitalWrite(Rled, LOW);     
+         }     
+         switch(value){     
+         case 18615: //Keypad button "3"     
+          //turns on red led     
+         digitalWrite(MOTOR, LOW);     
+         digitalWrite(PASSIVE_BUZZER, LOW);     
+         digitalWrite(Rled, HIGH);     
+         }     
+         switch(value){     
+         case 10455: //Keypad button "4"     
+         //turns on all actuators     
+         digitalWrite(MOTOR, HIGH);     
+         digitalWrite(PASSIVE_BUZZER, HIGH);     
+         digitalWrite(Rled, HIGH);     
+         }     
+         switch(value){     
+         case 255: //Keypad button "POWER"     
+         //turns off all actuators     
+         digitalWrite(MOTOR, LOW);     
+         digitalWrite(PASSIVE_BUZZER, LOW);     
+         digitalWrite(Rled, LOW);     
+         } 
+       irrecv.resume();      
+   }     
+}      // With this type of setup it is extremly easy to add any actuator or combination of actuators by just adding on different blocks of code inside of the void loop to make different actions that respond to all of the buttons on the remote
